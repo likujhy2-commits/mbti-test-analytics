@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 성격 유형 테스트 - 데이터 수집 버전</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #4a90e2;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .start-button {
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #4a90e2, #357bd8);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(74, 144, 226, 0.4);
+        }
+
+        .start-button:active {
+            transform: translateY(-1px);
+        }
+
+        .info {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        /* 테스트 페이지 스타일 */
+        .test-container {
+            max-width: 600px;
+            width: 90%;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4a90e2, #357bd8);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .question-number {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: #4a90e2;
+            background-color: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            border-color: #4a90e2;
+            background-color: #e3f2fd;
+        }
+
+        .next-button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #4a90e2, #357bd8);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .next-button.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .next-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+        }
+
+        /* 결과 페이지 스타일 */
+        .result-container {
+            max-width: 700px;
+            width: 90%;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            display: none;
+        }
+
+        .result-type {
+            font-size: 3em;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .result-description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .traits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .trait {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .trait-title {
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 5px;
+        }
+
+        .trait-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .restart-button, .analytics-button, .export-button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+
+        .restart-button {
+            color: #4a90e2;
+            background-color: transparent;
+            border-color: #4a90e2;
+        }
+
+        .restart-button:hover {
+            background-color: #4a90e2;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .analytics-button {
+            color: #28a745;
+            background-color: transparent;
+            border-color: #28a745;
+        }
+
+        .analytics-button:hover {
+            background-color: #28a745;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .export-button {
+            color: #ffc107;
+            background-color: transparent;
+            border-color: #ffc107;
+        }
+
+        .export-button:hover {
+            background-color: #ffc107;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* 분석 페이지 스타일 */
+        .analytics-container {
+            max-width: 800px;
+            width: 90%;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            display: none;
+        }
+
+        .analytics-title {
+            font-size: 2em;
+            color: #28a745;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 4px solid #28a745;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .mbti-chart {
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .mbti-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .mbti-label {
+            width: 80px;
+            font-weight: bold;
+            color: #4a90e2;
+        }
+
+        .mbti-progress {
+            flex: 1;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+
+        .mbti-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4a90e2, #357bd8);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .mbti-count {
+            width: 30px;
+            text-align: right;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .back-button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #6c757d;
+            background-color: transparent;
+            border: 2px solid #6c757d;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #6c757d;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="startPage">
+    <h1>MBTI 성격 유형 테스트</h1>
+    <div class="subtitle">Myers-Briggs Type Indicator</div>
+    <p>16가지 성격 유형 중 당신의 진짜 모습을 찾아보세요!<br>총 20개의 질문으로 구성된 정확한 성격 분석 테스트입니다.</p>
+    <button class="start-button" onclick="startTest()">테스트 시작하기</button>
+    <div class="info">⏱️ 소요시간: 약 5분</div>
+</div>
+
+<div class="test-container" id="testPage">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="question-number" id="questionNumber">질문 1 / 20</div>
+    <div class="question" id="questionText"></div>
+    <div class="options" id="options"></div>
+    <button class="next-button" id="nextButton" onclick="nextQuestion()">다음 질문</button>
+</div>
+
+<div class="result-container" id="resultPage">
+    <div class="result-type" id="resultType"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-description" id="resultDescription"></div>
+    <div class="traits" id="traits"></div>
+    <div class="button-group">
+        <button class="restart-button" onclick="restartTest()">다시 테스트하기</button>
+        <button class="analytics-button" onclick="showAnalytics()">데이터 분석 보기</button>
+        <button class="export-button" onclick="exportData()">데이터 내보내기</button>
+    </div>
+</div>
+
+<div class="analytics-container" id="analyticsPage">
+    <div class="analytics-title">📊 테스트 데이터 분석</div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" id="totalTests">0</div>
+            <div class="stat-label">총 테스트 수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="uniqueUsers">0</div>
+            <div class="stat-label">고유 사용자 수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="mostCommonType">-</div>
+            <div class="stat-label">가장 많은 유형</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="avgCompletionTime">0</div>
+            <div class="stat-label">평균 완료 시간(분)</div>
+        </div>
+    </div>
+
+    <div class="mbti-chart">
+        <div class="chart-title">MBTI 유형별 분포</div>
+        <div id="mbtiDistribution"></div>
+    </div>
+
+    <div class="mbti-chart">
+        <div class="chart-title">4차원별 분포</div>
+        <div id="dimensionDistribution"></div>
+    </div>
+
+    <div class="mbti-chart">
+        <div class="chart-title">SNS 사용 분포</div>
+        <div id="snsDistribution"></div>
+    </div>
+
+    <button class="back-button" onclick="backToResult()">결과로 돌아가기</button>
+</div>
+
+<script>
+    // MBTI 질문 데이터
+    const questions = [
+        {
+            question: "새로운 프로젝트를 시작할 때 당신은 주로 어떤 역할을 선호하나요?",
+            options: [
+                { text: "팀원들과 활발하게 소통하며 아이디어를 내고 에너지를 불어넣는 역할", type: "E" },
+                { text: "혼자 충분히 자료를 분석하고 신중하게 계획을 세우는 역할", type: "I" },
+                { text: "명확한 목표와 절차를 설정하고 전체적인 진행을 관리하는 역할", type: "J" },
+                { text: "유연하게 상황에 맞춰 새로운 가능성을 탐색하고 변화를 수용하는 역할", type: "P" }
+            ]
+        },
+        {
+            question: "업무 중 예상치 못한 문제에 직면했을 때 당신은 어떻게 대응하나요?",
+            options: [
+                { text: "기존의 성공 사례나 검증된 데이터에 기반하여 실용적인 해결책을 찾는다", type: "S" },
+                { text: "틀에 얽매이지 않고 창의적인 아이디어를 발상하여 새로운 해결책을 모색한다", type: "N" },
+                { text: "문제의 핵심을 논리적으로 분석하고 객관적인 사실에 따라 판단한다", type: "T" },
+                { text: "관련자들의 입장과 감정을 고려하여 모두가 동의할 수 있는 방향을 찾는다", type: "F" }
+            ]
+        },
+        {
+            question: "동료와 협업할 때 당신은 어떤 방식으로 기여하는 것을 선호하나요?",
+            options: [
+                { text: "팀원들에게 적극적으로 동기를 부여하고 긍정적인 분위기를 조성한다", type: "E" },
+                { text: "각자의 역할을 명확히 하고 독립적으로 자신의 업무에 집중한다", type: "I" },
+                { text: "구체적인 데이터와 사실을 바탕으로 현실적인 의견을 제시한다", type: "S" },
+                { text: "미래를 내다보고 새로운 가능성이나 비전을 제시하며 영감을 준다", type: "N" }
+            ]
+        },
+        {
+            question: "스트레스를 받거나 재충전이 필요할 때 당신은 주로 무엇을 하나요?",
+            options: [
+                { text: "사람들과 만나거나 활동적인 취미를 통해 에너지를 얻는다", type: "E" },
+                { text: "혼자 조용히 생각하거나 휴식을 취하며 내면의 에너지를 회복한다", type: "I" },
+                { text: "문제의 원인을 분석하고 해결 방안을 논리적으로 고민한다", type: "T" },
+                { text: "친한 사람들과 감정을 공유하며 위로와 공감을 얻으려 한다", type: "F" }
+            ]
+        },
+        {
+            question: "다음 중 당신이 가장 자주 사용하는 SNS 플랫폼은 무엇인가요? (모두 선택 가능)",
+            options: [
+                { text: "인스타그램 (사진/영상 공유 중심)", type: "SNS_INSTA" },
+                { text: "유튜브 (영상 콘텐츠 중심)", type: "SNS_YT" },
+                { text: "페이스북 (지인과의 소통, 그룹 활동 중심)", type: "SNS_FB" },
+                { text: "틱톡 (짧은 영상 콘텐츠 중심)", type: "SNS_TIKTOK" },
+                { text: "X (트위터) (실시간 정보, 텍스트 기반 소통 중심)", type: "SNS_X" },
+                { text: "네이버 블로그 (개인 기록, 전문 정보 공유 중심)", type: "SNS_NAVER_BLOG" },
+                { text: "온라인 카페/커뮤니티 (특정 관심사 기반 소통 중심)", type: "SNS_CAFE" },
+                { text: "스레드 (인스타그램 기반 텍스트 소통)", type: "SNS_THREAD" },
+                { text: "링크드인 (직업, 비즈니스 네트워킹 중심)", type: "SNS_LINKEDIN" },
+                { text: "기타 (위에 없는 다른 SNS)", type: "SNS_ETC" }
+            ],
+            allowMultiple: true // 중복 선택 허용
+        }
+    ];
+
+    // MBTI 결과 데이터 (기존과 동일)
+    const mbtiResults = {
+        "INTJ": { title: "전략 기획자 / 연구 개발자", description: "논리적이고 통찰력이 뛰어나 전략을 세우고 복잡한 문제를 해결하는 데 탁월합니다. 연구, 개발, 기획 분야에 강점을 보입니다.", traits: [{ title: "분석적", desc: "문제의 본질을 파악하고 해결책 제시" }, { title: "독립적", desc: "자신만의 방식으로 깊이 있는 탐구" }, { title: "장기적 관점", desc: "미래를 예측하고 계획 수립" }, { title: "실행력", desc: "세운 전략을 꾸준히 추진" }] },
+        "INTP": { title: "데이터 분석가 / 학자", description: "새로운 이론과 지식 탐구에 열정적이며, 복잡한 데이터를 분석하고 새로운 아이디어를 창출하는 데 능합니다. 연구, IT, 데이터 관련 직무에 적합합니다.", traits: [{ title: "논리적", desc: "객관적 사실과 논리로 사고" }, { title: "창의적", desc: "새롭고 독창적인 아이디어 제시" }, { title: "지적 호기심", desc: "끊임없이 배우고 탐구" }, { title: "자율성", desc: "규칙보다 자유로운 사고 선호" }] },
+        "ENTJ": { title: "경영 컨설턴트 / 리더", description: "타고난 리더십과 목표 지향적인 성향으로 조직을 이끌고 목표를 달성하는 데 뛰어납니다. 경영, 컨설팅, 관리직에 강점을 보입니다.", traits: [{ title: "리더십", desc: "강력한 리더십으로 조직 이끌기" }, { title: "추진력", desc: "목표 달성을 위해 과감하게 추진" }, { title: "전략가", desc: "효율적인 전략 수립 및 실행" }, { title: "도전적", desc: "새로운 목표에 끊임없이 도전" }] },
+        "ENTP": { title: "스타트업 CEO / 기획자", description: "창의적이고 혁신적인 아이디어로 새로운 기회를 찾아내고, 다양한 사람들과 협력하여 프로젝트를 발전시키는 데 능합니다. 스타트업, 기획, 마케팅 분야에 적합합니다.", traits: [{ title: "혁신적", desc: "새로운 아이디어와 가능성 탐색" }, { title: "다재다능", desc: "다양한 분야에 재능과 관심" }, { title: "토론가", desc: "지적인 토론과 논쟁을 즐김" }, { title: "융통성", desc: "변화에 유연하게 대처" }] },
+        "INFJ": { title: "심리 상담가 / 교육자", description: "통찰력과 공감 능력이 뛰어나 사람들의 내면을 이해하고 성장을 돕는 데 탁월합니다. 상담, 교육, 사회복지 분야에 적합합니다.", traits: [{ title: "공감 능력", desc: "타인의 감정을 깊이 이해" }, { title: "이상주의", desc: "세상을 더 나은 곳으로 만들고자 함" }, { title: "통찰력", desc: "사람과 상황의 본질을 꿰뚫어 봄" }, { title: "헌신적", desc: "자신이 믿는 가치에 헌신" }] },
+        "INFP": { title: "작가 / 예술가", description: "창의적이고 감수성이 풍부하며, 자신만의 독특한 세계를 표현하고 타인에게 영감을 주는 데 능합니다. 예술, 문학, 디자인 분야에 적합합니다.", traits: [{ title: "창의적", desc: "독창적인 아이디어와 표현" }, { title: "이상주의", desc: "개인의 가치와 신념 중시" }, { title: "공감적", desc: "타인의 감정에 민감하게 반응" }, { title: "내향적", desc: "혼자만의 시간을 통해 영감 얻기" }] },
+        "ENFJ": { title: "HR 전문가 / 코치", description: "타고난 리더십과 뛰어난 의사소통 능력으로 사람들의 잠재력을 이끌어내고 동기 부여하는 데 능합니다. HR, 코칭, 교육, 마케팅 분야에 적합합니다.", traits: [{ title: "리더십", desc: "사람들을 이끌고 동기 부여" }, { title: "소통 전문가", desc: "뛰어난 의사소통 능력" }, { title: "사회성", desc: "타인과의 관계를 중요하게 생각" }, { title: "이상주의", desc: "긍정적인 변화를 추구" }] },
+        "ENFP": { title: "마케터 / 콘텐츠 크리에이터", description: "열정적이고 창의적인 아이디어로 사람들의 마음을 사로잡고, 새로운 것을 탐험하며 즐거움을 창출하는 데 능합니다. 마케팅, 홍보, 콘텐츠 제작 분야에 적합합니다.", traits: [{ title: "열정적", desc: "일에 대한 강한 열정과 에너지" }, { title: "창의적", desc: "독창적인 아이디어와 발상" }, { title: "사교적", desc: "사람들과 어울리며 영감 얻기" }, { title: "자유로운 영혼", desc: "틀에 얽매이지 않고 유연함" }] },
+        "ISTJ": { title: "공무원 / 회계사", description: "실용적이고 책임감이 강하며, 정해진 절차와 규칙에 따라 업무를 정확하고 안정적으로 처리하는 데 능합니다. 공무원, 회계, 관리, 행정 분야에 적합합니다.", traits: [{ title: "정확성", desc: "정확하고 세밀하게 업무 처리" }, { title: "책임감", desc: "맡은 일에 대한 강한 책임감" }, { title: "실용적", desc: "현실적인 문제 해결에 능함" }, { title: "성실함", desc: "꾸준하고 성실하게 노력" }] },
+        "ISFJ": { title: "간호사 / 사회복지사", description: "타인을 배려하고 헌신적이며, 안정적인 환경에서 사람들을 돕는 데 보람을 느낍니다. 의료, 복지, 교육, 서비스 분야에 적합합니다.", traits: [{ title: "배려심", desc: "타인의 필요를 세심하게 돌봄" }, { title: "헌신적", desc: "타인을 위해 기꺼이 희생" }, { title: "실용적", desc: "현실적인 도움과 지원 제공" }, { title: "안정성", desc: "안정적인 관계와 환경 선호" }] },
+        "ESTJ": { title: "경찰관 / 관리자", description: "체계적이고 현실적인 리더십으로 조직을 효율적으로 관리하고 목표를 달성하는 데 능합니다. 관리직, 공공 서비스, 군인, 영업 분야에 적합합니다.", traits: [{ title: "관리 능력", desc: "조직을 효율적으로 관리" }, { title: "현실적", desc: "객관적인 사실에 기반한 판단" }, { title: "결단력", desc: "신속하고 단호한 결정" }, { title: "책임감", desc: "맡은 임무에 대한 강한 책임" }] },
+        "ESFJ": { title: "교사 / 판매 관리자", description: "친화력이 좋고 협력을 중시하며, 사람들과 어울리고 조화로운 분위기를 만드는 데 능합니다. 교육, 서비스, 판매, HR 분야에 적합합니다.", traits: [{ title: "친화력", desc: "사람들과 쉽게 어울리고 소통" }, { title: "협력적", desc: "팀워크와 조화를 중시" }, { title: "실용적", desc: "현실적인 도움과 조언 제공" }, { title: "배려심", desc: "타인의 감정을 이해하고 공감" }] },
+        "ISTP": { title: "엔지니어 / 기술 전문가", description: "실용적이고 분석적이며, 문제 해결을 위해 직접 손으로 만들고 조작하는 것을 좋아합니다. 엔지니어링, 기술 개발, 장인 분야에 적합합니다.", traits: [{ title: "실용적", desc: "실질적인 문제 해결 능력" }, { title: "분석적", desc: "문제의 원인을 파악하고 분석" }, { title: "독립적", desc: "자신만의 방식으로 문제 해결" }, { title: "유연성", desc: "새로운 도구와 기술 습득" }] },
+        "ISFP": { title: "디자이너 / 음악가", description: "감각적이고 예술적인 재능으로 아름다움을 창조하고, 자유로운 분위기에서 자신을 표현하는 것을 좋아합니다. 예술, 디자인, 음악, 패션 분야에 적합합니다.", traits: [{ title: "예술적 감각", desc: "아름다움을 창조하고 표현" }, { title: "자유로운", desc: "틀에 얽매이지 않고 창작" }, { title: "감수성", desc: "세밀한 감각과 관찰력" }, { title: "현재 지향", desc: "현재의 순간을 즐기고 집중" }] },
+        "ESTP": { title: "영업 / 스포츠 에이전트", description: "활동적이고 즉흥적이며, 사람들과 소통하며 빠르게 상황을 파악하고 문제를 해결하는 데 능합니다. 영업, 스포츠, 기업가, 마케팅 분야에 적합합니다.", traits: [{ title: "활동적", desc: "에너지 넘치고 활동적인 성향" }, { title: "실용적", desc: "현실적인 문제 해결에 능함" }, { title: "적응력", desc: "빠르게 변화에 적응하고 대처" }, { title: "설득력", desc: "사람들을 설득하고 동기 부여" }] },
+        "ESFP": { title: "이벤트 기획자 / 연예인", description: "사교적이고 낙천적이며, 사람들과 어울려 즐거움을 공유하고 활기찬 분위기를 만드는 데 능합니다. 이벤트, 공연, 엔터테인먼트, 서비스 분야에 적합합니다.", traits: [{ title: "사교적", desc: "사람들과 어울리는 것을 즐김" }, { title: "낙천적", desc: "긍정적인 에너지를 전파" }, { title: "즉흥적", desc: "상황에 맞춰 유연하게 행동" }, { title: "재미 추구", desc: "삶의 즐거움과 행복을 중요시" }] }
+    };
+
+    let currentQuestion = 0;
+    let answers = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0, SNS_INSTA: 0, SNS_YT: 0, SNS_FB: 0, SNS_TIKTOK: 0, SNS_X: 0, SNS_NAVER_BLOG: 0, SNS_CAFE: 0, SNS_THREAD: 0, SNS_LINKEDIN: 0, SNS_ETC: 0 };
+    let selectedOption = null;
+    let testStartTime = null;
+    let userAnswers = [];
+
+    // 데이터 저장 및 관리 함수들
+    function saveTestData(mbtiType, completionTime) {
+        const testData = {
+            id: Date.now(),
+            timestamp: new Date().toISOString(),
+            mbtiType: mbtiType,
+            completionTime: completionTime,
+            answers: userAnswers,
+            userAgent: navigator.userAgent,
+            screenResolution: `${screen.width}x${screen.height}`
+        };
+
+        // 로컬 스토리지에서 기존 데이터 가져오기
+        let allTests = JSON.parse(localStorage.getItem('mbtiTests') || '[]');
+        allTests.push(testData);
+        
+        // 최대 1000개까지만 저장 (메모리 관리)
+        if (allTests.length > 1000) {
+            allTests = allTests.slice(-1000);
+        }
+        
+        localStorage.setItem('mbtiTests', JSON.stringify(allTests));
+        return testData;
+    }
+
+    function getAnalyticsData() {
+        const allTests = JSON.parse(localStorage.getItem('mbtiTests') || '[]');
+        
+        // MBTI 유형별 분포 계산
+        const mbtiDistribution = {};
+        const dimensionDistribution = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        let totalCompletionTime = 0;
+        const uniqueUsers = new Set();
+        const snsDistribution = { SNS_INSTA: 0, SNS_YT: 0, SNS_FB: 0, SNS_TIKTOK: 0, SNS_X: 0, SNS_NAVER_BLOG: 0, SNS_CAFE: 0, SNS_THREAD: 0, SNS_LINKEDIN: 0, SNS_ETC: 0 };
+
+        allTests.forEach(test => {
+            // MBTI 유형 분포
+            mbtiDistribution[test.mbtiType] = (mbtiDistribution[test.mbtiType] || 0) + 1;
+            
+            // 차원별 분포
+            const dimensions = test.mbtiType.split('');
+            dimensions.forEach(dim => {
+                if (dimensionDistribution.hasOwnProperty(dim)) {
+                    dimensionDistribution[dim]++;
+                }
+            });
+            
+            // SNS 분포
+            test.answers.forEach(answer => {
+                if (answer.selectedType && answer.selectedType.startsWith('SNS_')) {
+                    snsDistribution[answer.selectedType]++;
+                }
+            });
+            
+            // 완료 시간
+            totalCompletionTime += test.completionTime;
+            
+            // 고유 사용자 (간단한 방법: IP 대신 브라우저 정보 사용)
+            uniqueUsers.add(test.userAgent);
+        });
+
+        return {
+            totalTests: allTests.length,
+            uniqueUsers: uniqueUsers.size,
+            mbtiDistribution,
+            dimensionDistribution,
+            snsDistribution,
+            avgCompletionTime: allTests.length > 0 ? Math.round(totalCompletionTime / allTests.length) : 0,
+            mostCommonType: Object.keys(mbtiDistribution).reduce((a, b) => 
+                mbtiDistribution[a] > mbtiDistribution[b] ? a : b, '-')
+        };
+    }
+
+    function startTest() {
+        testStartTime = Date.now();
+        userAnswers = [];
+        document.getElementById('startPage').style.display = 'none';
+        document.getElementById('testPage').style.display = 'block';
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const question = questions[currentQuestion];
+        const progress = ((currentQuestion + 1) / questions.length) * 100;
+        
+        document.getElementById('progressFill').style.width = progress + '%';
+        document.getElementById('questionNumber').textContent = `질문 ${currentQuestion + 1} / ${questions.length}`;
+        document.getElementById('questionText').textContent = question.question;
+        
+        const optionsContainer = document.getElementById('options');
+        optionsContainer.innerHTML = '';
+        
+        question.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.className = 'option';
+            optionElement.textContent = option.text;
+            optionElement.onclick = () => selectOption(index, optionElement);
+            optionsContainer.appendChild(optionElement);
+        });
+        
+        document.getElementById('nextButton').classList.remove('active');
+        selectedOption = null;
+    }
+
+    function selectOption(index, element) {
+        const question = questions[currentQuestion];
+        if (question.allowMultiple) {
+            // 다중 선택 허용 질문
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                if (selectedOption) {
+                    selectedOption = selectedOption.filter(item => item !== index);
+                }
+            } else {
+                element.classList.add('selected');
+                if (!selectedOption) {
+                    selectedOption = [];
+                }
+                selectedOption.push(index);
+            }
+            // 다중 선택 시에는 최소 한 개 선택되어 있으면 다음 버튼 활성화
+            document.getElementById('nextButton').classList.toggle('active', selectedOption && selectedOption.length > 0);
+        } else {
+            // 단일 선택 질문 (기존 로직)
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedOption = index;
+            document.getElementById('nextButton').classList.add('active');
+        }
+    }
+
+    function nextQuestion() {
+        const question = questions[currentQuestion];
+        if (question.allowMultiple) {
+            if (!selectedOption || selectedOption.length === 0) return;
+            
+            selectedOption.forEach(idx => {
+                const selectedAnswer = question.options[idx];
+                userAnswers.push({
+                    questionIndex: currentQuestion,
+                    question: question.question,
+                    selectedOption: selectedAnswer.text,
+                    selectedType: selectedAnswer.type
+                });
+                answers[selectedAnswer.type]++;
+            });
+        } else {
+            if (selectedOption === null) return;
+            
+            const selectedAnswer = question.options[selectedOption];
+            
+            // 사용자 답변 저장
+            userAnswers.push({
+                questionIndex: currentQuestion,
+                question: question.question,
+                selectedOption: selectedAnswer.text,
+                selectedType: selectedAnswer.type
+            });
+            
+            answers[selectedAnswer.type]++;
+        }
+        
+        currentQuestion++;
+        
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        const completionTime = Math.round((Date.now() - testStartTime) / 1000 / 60); // 분 단위
+        
+        const mbtiType = 
+            (answers.E > answers.I ? 'E' : 'I') +
+            (answers.S > answers.N ? 'S' : 'N') +
+            (answers.T > answers.F ? 'T' : 'F') +
+            (answers.J > answers.P ? 'J' : 'P');
+        
+        // 테스트 데이터 저장
+        saveTestData(mbtiType, completionTime);
+        
+        const result = mbtiResults[mbtiType];
+        
+        document.getElementById('testPage').style.display = 'none';
+        document.getElementById('resultPage').style.display = 'block';
+        
+        document.getElementById('resultType').textContent = mbtiType;
+        document.getElementById('resultTitle').textContent = result.title;
+        document.getElementById('resultDescription').textContent = result.description;
+        
+        const traitsContainer = document.getElementById('traits');
+        traitsContainer.innerHTML = '';
+        
+        result.traits.forEach(trait => {
+            const traitElement = document.createElement('div');
+            traitElement.className = 'trait';
+            traitElement.innerHTML = `
+                <div class="trait-title">${trait.title}</div>
+                <div class="trait-desc">${trait.desc}</div>
+            `;
+            traitsContainer.appendChild(traitElement);
+        });
+    }
+
+    // 비밀번호 설정 (원하는 비밀번호로 변경하세요)
+    const ANALYTICS_PASSWORD = "admin123";
+
+    function showAnalytics() {
+        const password = prompt("데이터 분석을 보려면 비밀번호를 입력하세요.");
+        if (password !== ANALYTICS_PASSWORD) {
+            alert("비밀번호가 틀렸습니다.");
+            return;
+        }
+
+        const analytics = getAnalyticsData();
+        
+        document.getElementById('resultPage').style.display = 'none';
+        document.getElementById('analyticsPage').style.display = 'block';
+        
+        // 통계 업데이트
+        document.getElementById('totalTests').textContent = analytics.totalTests;
+        document.getElementById('uniqueUsers').textContent = analytics.uniqueUsers;
+        document.getElementById('mostCommonType').textContent = analytics.mostCommonType;
+        document.getElementById('avgCompletionTime').textContent = analytics.avgCompletionTime;
+        
+        // MBTI 분포 차트
+        const mbtiContainer = document.getElementById('mbtiDistribution');
+        mbtiContainer.innerHTML = '';
+        
+        const sortedMbti = Object.entries(analytics.mbtiDistribution)
+            .sort(([,a], [,b]) => b - a);
+        
+        sortedMbti.forEach(([type, count]) => {
+            const percentage = Math.round((count / analytics.totalTests) * 100);
+            const barElement = document.createElement('div');
+            barElement.className = 'mbti-bar';
+            barElement.innerHTML = `
+                <div class="mbti-label">${type}</div>
+                <div class="mbti-progress">
+                    <div class="mbti-fill" style="width: ${percentage}%"></div>
+                </div>
+                <div class="mbti-count">${count}</div>
+            `;
+            mbtiContainer.appendChild(barElement);
+        });
+        
+        // 차원별 분포 차트
+        const dimensionContainer = document.getElementById('dimensionDistribution');
+        dimensionContainer.innerHTML = '';
+        
+        const dimensions = [
+            { name: 'E/I', e: analytics.dimensionDistribution.E, i: analytics.dimensionDistribution.I },
+            { name: 'S/N', s: analytics.dimensionDistribution.S, n: analytics.dimensionDistribution.N },
+            { name: 'T/F', t: analytics.dimensionDistribution.T, f: analytics.dimensionDistribution.F },
+            { name: 'J/P', j: analytics.dimensionDistribution.J, p: analytics.dimensionDistribution.P }
+        ];
+        
+        dimensions.forEach(dim => {
+            const keys = Object.keys(dim).filter(k => k !== 'name');
+            const total = keys.reduce((sum, k) => sum + dim[k], 0);
+            
+            keys.forEach(key => {
+                const count = dim[key];
+                const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+                const barElement = document.createElement('div');
+                barElement.className = 'mbti-bar';
+                barElement.innerHTML = `
+                    <div class="mbti-label">${dim.name} - ${key.toUpperCase()}</div>
+                    <div class="mbti-progress">
+                        <div class="mbti-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="mbti-count">${count}</div>
+                `;
+                dimensionContainer.appendChild(barElement);
+            });
+        });
+
+        // SNS 분포 차트
+        const snsContainer = document.getElementById('snsDistribution');
+        snsContainer.innerHTML = '';
+
+        const sortedSns = Object.entries(analytics.snsDistribution)
+            .sort(([,a], [,b]) => b - a);
+
+        sortedSns.forEach(([type, count]) => {
+            const percentage = Math.round((count / analytics.totalTests) * 100);
+            const barElement = document.createElement('div');
+            barElement.className = 'mbti-bar';
+            barElement.innerHTML = `
+                <div class="mbti-label">${type}</div>
+                <div class="mbti-progress">
+                    <div class="mbti-fill" style="width: ${percentage}%"></div>
+                </div>
+                <div class="mbti-count">${count}</div>
+            `;
+            snsContainer.appendChild(barElement);
+        });
+    }
+
+    function exportData() {
+        const allTests = JSON.parse(localStorage.getItem('mbtiTests') || '[]');
+        const csvContent = "data:text/csv;charset=utf-8," + 
+            "ID,Timestamp,MBTI Type,Completion Time (min),User Agent,Screen Resolution\n" +
+            allTests.map(test => 
+                `${test.id},${test.timestamp},${test.mbtiType},${test.completionTime},"${test.userAgent}",${test.screenResolution}`
+            ).join("\n");
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `mbti_test_data_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function backToResult() {
+        document.getElementById('analyticsPage').style.display = 'none';
+        document.getElementById('resultPage').style.display = 'block';
+    }
+
+    function restartTest() {
+        currentQuestion = 0;
+        answers = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0, SNS_INSTA: 0, SNS_YT: 0, SNS_FB: 0, SNS_TIKTOK: 0, SNS_X: 0, SNS_NAVER_BLOG: 0, SNS_CAFE: 0, SNS_THREAD: 0, SNS_LINKEDIN: 0, SNS_ETC: 0 };
+        selectedOption = null;
+        userAnswers = [];
+        
+        document.getElementById('resultPage').style.display = 'none';
+        document.getElementById('startPage').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
