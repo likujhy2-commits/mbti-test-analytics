@@ -343,7 +343,7 @@
     <div class="progress-bar">
         <div class="progress-fill" id="progressFill"></div>
     </div>
-    <div class="question-number" id="questionNumber">질문 1 / 20</div>
+    <div class="question-number" id="questionNumber">질문 1 / 15</div>
     <div class="question" id="questionText"></div>
     <div class="options" id="options"></div>
     <button class="next-button" id="nextButton" onclick="nextQuestion()">다음 질문</button>
@@ -396,324 +396,294 @@
 <script>
     // MBTI 질문 데이터 (기존 mbti-test.html 내용과 동일)
     const questions = [
+        // 챕터 1: 일경험 선호도 조사
         {
-            question: "새로운 사람들과 만나는 파티에서 당신은?",
+            question: "나는 어떤 형태의 일경험이 가장 흥미로운가?",
             options: [
-                { text: "많은 사람들과 대화하며 에너지를 얻는다", type: "E" },
-                { text: "소수의 친한 사람들과 깊은 대화를 나눈다", type: "I" }
+                { text: "실무 중심의 일겨험", type: "C1Q1A" },
+                { text: "다양한 직무를 체험하는 단기 프로그램", type: "C1Q1B" },
+                { text: "창업·프로젝트 참여형 활동", type: "C1Q1C" },
+                { text: "타지역에서 경험할 수 있는 활동", type: "C1Q1D" }
             ]
         },
         {
-            question: "문제를 해결할 때 당신은?",
+            question: "일경험에서 가장 기대하는 것은?",
             options: [
-                { text: "구체적이고 실용적인 방법을 선호한다", type: "S" },
-                { text: "창의적이고 새로운 아이디어를 찾는다", type: "N" }
+                { text: "전문 스킬·실무 역량 습득", type: "C1Q2A" },
+                { text: "현직자와의 네트워킹/멘토링", type: "C1Q2B" },
+                { text: "포트폴리오 확보", type: "C1Q2C" },
+                { text: "직장생활 경험", type: "C1Q2D" }
             ]
         },
         {
-            question: "중요한 결정을 내릴 때 당신은? 컴퓨터는? 당신은?",
+            question: "일경험 참여 시 가장 신경 쓰이는 점은?",
             options: [
-                { text: "논리적 분석과 객관적 사실을 중시한다", type: "T" },
-                { text: "사람들의 감정과 가치를 고려한다", type: "F" }
+                { text: "급여·지원금의 부족함", type: "C1Q3A" },
+                { text: "참여 기간과 신청 일정", type: "C1Q3B" },
+                { text: "원하는 직무와의 연계성", type: "C1Q3C" },
+                { text: "정보 접근성과 모집 방법의 부재", type: "C1Q3D" }
             ]
         },
         {
-            question: "일상생활에서 당신은?",
+            question: "선호하는 일경험 기간은?",
             options: [
-                { text: "계획을 세우고 체계적으로 진행한다", type: "J" },
-                { text: "유연하게 상황에 맞춰 대응한다", type: "P" }
+                { text: "1개월 이하 단기 프로그램", type: "C1Q4A" },
+                { text: "3개월 단기 집중형", type: "C1Q4B" },
+                { text: "5개월 중·장기형", type: "C1Q4C" },
+                { text: "6개월 이상 장기형", type: "C1Q4D" }
             ]
         },
         {
-            question: "에너지를 얻는 방법은?",
+            question: "일경험 후 가장 기대하는 성과는?",
             options: [
-                { text: "사람들과 함께 활동할 때", type: "E" },
-                { text: "혼자만의 시간을 가질 때", type: "I" }
+                { text: "취업 연계/정규직 기회", type: "C1Q5A" },
+                { text: "경력 형성 및 포트폴리오 강화", type: "C1Q5B" },
+                { text: "자기 성장과 진로 탐색", type: "C1Q5C" },
+                { text: "인맥 형성 및 네트워킹", type: "C1Q5D" }
+            ]
+        },
+        // 챕터 2: 나의 일경험 유형 (직무유형 테스트)
+        {
+            question: "업무를 수행할 때 나는 주로?",
+            options: [
+                { text: "계획대로 꼼꼼하게 해야한다.", type: "C2Q1A" },
+                { text: "새로운 방법을 시도하며 유연하게 일한다.", type: "C2Q1B" },
+                { text: "사람들과 협업하며 아이디어를 나누는 걸 선호한다,", type: "C2Q1C" },
+                { text: "혼자 집중해서 몰입하며 해결하는걸 선호한다.", type: "C2Q1D" }
             ]
         },
         {
-            question: "정보를 처리하는 방식은?",
+            question: "나는 문제를 마주하면?",
             options: [
-                { text: "단계별로 차근차근 접근한다", type: "S" },
-                { text: "전체적인 그림을 먼저 파악한다", type: "N" }
+                { text: "매뉴얼/정형화된 방법으로 해결한다,", type: "C2Q2A" },
+                { text: "새로운 해결책을 찾아본다", type: "C2Q2B" },
+                { text: "직장동료, 상사와 상의 후 결정한다.", type: "C2Q2C" },
+                { text: "먼저 시도해보고 결과를 보며 조정한다.", type: "C2Q2D" }
             ]
         },
         {
-            question: "갈등 상황에서 당신은?",
+            question: "내가 가장 좋아하는 역할은?",
             options: [
-                { text: "객관적 사실을 바탕으로 판단한다", type: "T" },
-                { text: "모든 사람의 입장을 이해하려 한다", type: "F" }
+                { text: "계획하고 정리하는 역할", type: "C2Q3A" },
+                { text: "새로운 아이디어를 제시하는 역할", type: "C2Q3B" },
+                { text: "사람들과 대화가 너무 좋아요! 커뮤니케이션 역할", type: "C2Q3C" },
+                { text: "모든일 내가한다! 부지런한 일개미 역할", type: "C2Q3D" }
             ]
         },
         {
-            question: "프로젝트 진행 방식은?",
+            question: "나는 업무 성과를 평가받을 때?",
             options: [
-                { text: "미리 계획을 세우고 일정을 지킨다", type: "J" },
-                { text: "마감일을 활용해 유연하게 진행한다", type: "P" }
+                { text: "정해진 기준·성과 목표 달성 여부", type: "C2Q4A" },
+                { text: "창의적 시도와 새로운 결과", type: "C2Q4B" },
+                { text: "팀과 함께 협력한 과정과 결과", type: "C2Q4C" },
+                { text: "혼자 성취한 실질적 결과", type: "C2Q4D" }
             ]
         },
         {
-            question: "새로운 환경에서 당신은?",
+            question: "나는 일할 때 가장 중요하게 생각하는 가치?",
             options: [
-                { text: "적극적으로 사람들과 어울린다", type: "E" },
-                { text: "관찰하며 천천히 적응한다", type: "I" }
+                { text: "안정성과 예측 가능성", type: "C2Q5A" },
+                { text: "도전과 창의성", type: "C2Q5B" },
+                { text: "사람들과의 관계·협업", type: "C2Q5C" },
+                { text: "개인 성취감·전문성", type: "C2Q5D" }
+            ]
+        },
+        // 챕터 3: 내가 자주 사용하는 SNS와 선호 게시물 유형
+        {
+            question: "가장 자주 사용하는 SNS는?",
+            options: [
+                { text: "인스타그램", type: "C3Q1A" },
+                { text: "유튜브", type: "C3Q1B" },
+                { text: "틱톡", type: "C3Q1C" },
+                { text: "페이스북", type: "C3Q1D" },
+                { text: "기타(네이버 카페, 디스코드 등)", type: "C3Q1E" }
             ]
         },
         {
-            question: "학습할 때 선호하는 방식은?",
+            question: "하루 평균 SNS 사용 시간은?",
             options: [
-                { text: "구체적인 예시와 실습을 통해", type: "S" },
-                { text: "이론과 개념을 먼저 이해한 후", type: "N" }
+                { text: "1시간 미만", type: "C3Q2A" },
+                { text: "1~2시간", type: "C3Q2B" },
+                { text: "2~3시간", type: "C3Q2C" },
+                { text: "3시간 이상", type: "C3Q2D" }
             ]
         },
         {
-            question: "피드백을 줄 때 당신은?",
+            question: "SNS에서 주로 보는 콘텐츠 유형은?",
             options: [
-                { text: "직접적이고 명확하게 전달한다", type: "T" },
-                { text: "상대방의 기분을 고려해 전달한다", type: "F" }
+                { text: "짧은 영상/릴스", type: "C3Q3A" },
+                { text: "카드뉴스·정보형 포스트", type: "C3Q3B" },
+                { text: "친구·커뮤니티 게시글", type: "C3Q3C" },
+                { text: "공식 기관·브랜드 공지/소식", type: "C3Q3D" }
             ]
         },
         {
-            question: "여행 계획을 세울 때?",
+            question: "일경험 관련 정보를 얻을 때 선호하는 방식은?",
             options: [
-                { text: "상세한 일정과 예약을 미리 한다", type: "J" },
-                { text: "대략적인 계획만 세우고 즉흥적으로", type: "P" }
+                { text: "영상/카드뉴스 콘텐츠", type: "C3Q4A" },
+                { text: "SNS 포스트나 커뮤니티 공유", type: "C3Q4B" },
+                { text: "웹사이트·포털 검색", type: "C3Q4C" },
+                { text: "공공기관·청년센터 공식 채널", type: "C3Q4D" }
             ]
         },
         {
-            question: "스트레스를 받을 때 당신은?",
+            question: "SNS에서 가장 참여하고 싶은 활동은?",
             options: [
-                { text: "친구들과 이야기하며 해소한다", type: "E" },
-                { text: "혼자만의 시간을 가지며 회복한다", type: "I" }
-            ]
-        },
-        {
-            question: "새로운 기술을 배울 때?",
-            options: [
-                { text: "단계별 매뉴얼을 따라한다", type: "S" },
-                { text: "직접 시도해보며 익힌다", type: "N" }
-            ]
-        },
-        {
-            question: "팀에서 의견이 다를 때?",
-            options: [
-                { text: "논리적 근거로 설득한다", type: "T" },
-                { text: "모든 의견의 장점을 찾아본다", type: "F" }
-            ]
-        },
-        {
-            question: "일상적인 업무에서 당신은?",
-            options: [
-                { text: "정해진 절차와 규칙을 따른다", type: "J" },
-                { text: "효율적인 새로운 방법을 찾는다", type: "P" }
-            ]
-        },
-        {
-            question: "새로운 아이디어를 제시할 때?",
-            options: [
-                { text: "회의에서 적극적으로 발표한다", type: "E" },
-                { text: "개인적으로 신중하게 검토 후 제시한다", type: "I" }
-            ]
-        },
-        {
-            question: "문제 해결 접근법은?",
-            options: [
-                { text: "검증된 방법을 사용한다", type: "S" },
-                { text: "혁신적인 해결책을 시도한다", type: "N" }
-            ]
-        },
-        {
-            question: "중요한 결정에서 고려하는 것은?",
-            options: [
-                { text: "효율성과 결과의 객관적 분석", type: "T" },
-                { text: "사람들의 만족도와 조화", type: "F" }
-            ]
-        },
-        {
-            question: "마지막으로, 이상적인 하루는?",
-            options: [
-                { text: "계획대로 완벽하게 진행되는 하루", type: "J" },
-                { text: "예상치 못한 즐거운 일이 생기는 하루", type: "P" }
+                { text: "댓글·좋아요 등 간단 참여", type: "C3Q5A" },
+                { text: "이벤트·퀴즈 참여", type: "C3Q5B" },
+                { text: "실시간 라이브/질문 참여", type: "C3Q5C" },
+                { text: "직접 콘텐츠 제작·공유", type: "C3Q5D" }
             ]
         }
     ];
 
-    // MBTI 결과 데이터 (기존 mbti-test.html 내용과 동일)
     const mbtiResults = {
-        "INTJ": {
-            title: "건축가",
-            description: "상상력이 풍부하고 전략적 사고를 하는 건축가형은 모든 것을 개선할 방법을 찾아내는 문제 해결사입니다. 체계적이고 논리적인 접근으로 복잡한 문제를 해결하는 것을 즐깁니다.",
-            traits: [
-                { title: "독립적", desc: "자신만의 방식으로 일하는 것을 선호" },
-                { title: "전략적", desc: "장기적 관점에서 계획을 세움" },
-                { title: "완벽주의", desc: "높은 기준으로 일의 품질을 추구" },
-                { title: "결단력", desc: "명확한 목표를 향해 추진력 있게 행동" }
-            ]
+        "감자군": {
+            title: "감자군",
+            description: "차분하게 내 길을 가는 안정형. 느리지만 꾸준하게, 묵묵히 일하는 신뢰형 친구.",
+            traits: [{ title: "안정형", desc: "차분하고 신뢰감 있음" }]
         },
-        "INTP": {
-            title: "논리학자",
-            description: "지식에 대한 끝없는 갈증을 가진 논리학자형은 이론과 추상적 개념에 깊이 몰입합니다. 복잡한 문제를 해결하는 데 탁월한 능력을 보이며, 지적 호기심이 매우 강합니다.",
-            traits: [
-                { title: "분석적", desc: "논리적 사고로 문제를 체계적으로 분석" },
-                { title: "창의적", desc: "독창적이고 혁신적인 아이디어 제시" },
-                { title: "객관적", desc: "감정보다 논리와 사실을 중시" },
-                { title: "유연한", desc: "새로운 관점과 가능성을 열어둠" }
-            ]
+        "바나니": {
+            title: "바나니",
+            description: "계획적이고 튼튼한 기반, 팀과 함께 성장을 즐기는 안정형 리더.",
+            traits: [{ title: "안정형", desc: "차분하고 신뢰감 있음" }]
         },
-        "ENTJ": {
-            title: "통솔자",
-            description: "자연스러운 리더십을 가진 통솔자형은 목표 달성을 위해 팀을 이끌어가는 데 탁월합니다. 효율성과 결과를 중시하며, 큰 그림을 보는 능력이 뛰어납니다.",
-            traits: [
-                { title: "리더십", desc: "자연스럽게 팀을 이끌고 동기부여" },
-                { title: "결단력", desc: "빠르고 확신에 찬 결정을 내림" },
-                { title: "목표지향", desc: "명확한 목표를 향해 추진력 있게 행동" },
-                { title: "효율성", desc: "최소한의 노력으로 최대의 결과 추구" }
-            ]
+        "애플링": {
+            title: "애플링",
+            description: "꼼꼼하고 균형 잡힌 감각, 숫자와 데이터를 사랑하는 안정형 천재.",
+            traits: [{ title: "안정형", desc: "차분하고 신뢰감 있음" }]
         },
-        "ENTP": {
-            title: "토론가",
-            description: "똑똑하고 호기심이 많은 토론가형은 지적 자극을 주는 대화를 즐깁니다. 새로운 아이디어와 가능성에 열려있으며, 창의적 문제 해결에 뛰어난 능력을 보입니다.",
-            traits: [
-                { title: "창의적", desc: "독창적이고 혁신적인 아이디어 제시" },
-                { title: "적응력", desc: "변화하는 상황에 유연하게 대응" },
-                { title: "호기심", desc: "새로운 지식과 경험에 대한 강한 욕구" },
-                { title: "에너지", desc: "열정적이고 활기찬 에너지" }
-            ]
+        "배링": {
+            title: "배링",
+            description: "꼼꼼하게 체크하며 실수를 최소화, 안정감 있는 신뢰형 일꾼.",
+            traits: [{ title: "안정형", desc: "차분하고 신뢰감 있음" }]
         },
-        "INFJ": {
-            title: "옹호자",
-            description: "이상주의적이고 창의적인 옹호자형은 다른 사람들을 돕고 세상을 더 나은 곳으로 만들고자 합니다. 깊이 있는 통찰력과 강한 가치관을 가지고 있습니다.",
-            traits: [
-                { title: "이상주의", desc: "더 나은 세상을 만들고자 하는 비전" },
-                { title: "통찰력", desc: "사람과 상황에 대한 깊은 이해" },
-                { title: "창의성", desc: "독창적이고 의미 있는 아이디어" },
-                { title: "결단력", desc: "가치관에 따른 확고한 결정" }
-            ]
+        "딸기팡": {
+            title: "딸기팡",
+            description: "사람들과 친근하게 소통하고 분위기 메이커, 팀워크를 즐기는 연결형.",
+            traits: [{ title: "연결형", desc: "사람들과 소통, 팀워크 즐김" }]
         },
-        "INFP": {
-            title: "중재자",
-            description: "시적이고 친절한 중재자형은 항상 선을 행할 준비가 되어 있는 이상주의적 성격입니다. 자신만의 가치관을 중요하게 여기며, 진정성 있는 삶을 추구합니다.",
-            traits: [
-                { title: "이상주의", desc: "개인적 가치관에 따른 삶의 추구" },
-                { title: "창의성", desc: "예술적이고 독창적인 표현" },
-                { title: "열정", desc: "중요한 일에 대한 깊은 몰입" },
-                { title: "유연성", desc: "다양한 관점에 대한 개방성" }
-            ]
+        "체리링": {
+            title: "체리링",
+            description: "상큼하게 소통하며 관계를 매끄럽게 연결하는 사람 중심형 캐릭터.",
+            traits: [{ title: "연결형", desc: "사람들과 소통, 팀워크 즐김" }]
         },
-        "ENFJ": {
-            title: "주인공",
-            description: "카리스마 있고 영감을 주는 주인공형은 다른 사람들의 성장과 발전을 돕는 것을 즐깁니다. 자연스러운 리더십과 강한 공감 능력을 가지고 있습니다.",
-            traits: [
-                { title: "카리스마", desc: "자연스럽게 사람들을 이끄는 매력" },
-                { title: "공감능력", desc: "다른 사람의 감정을 깊이 이해" },
-                { title: "이상주의", desc: "더 나은 세상을 만들고자 하는 비전" },
-                { title: "열정", desc: "중요한 일에 대한 강한 몰입" }
-            ]
+        "망고몽": {
+            title: "망고몽",
+            description: "부드럽고 친근하게 상대방 마음을 읽는 연결형, 상담 전문가.",
+            traits: [{ title: "연결형", desc: "사람들과 소통, 팀워크 즐김" }]
         },
-        "ENFP": {
-            title: "활동가",
-            description: "열정적이고 창의적인 활동가형은 삶을 즐기고 새로운 가능성을 탐험하는 것을 좋아합니다. 사람들과의 관계를 중시하며, 영감을 주는 능력이 뛰어납니다.",
-            traits: [
-                { title: "열정", desc: "생활에 대한 강한 열정과 에너지" },
-                { title: "창의성", desc: "독창적이고 혁신적인 아이디어" },
-                { title: "사교성", desc: "사람들과의 관계를 중시" },
-                { title: "유연성", desc: "변화와 새로운 경험에 개방적" }
-            ]
+        "오렌지팟": {
+            title: "오렌지팟",
+            description: "다채로운 사람들과 활발히 소통하며 지식을 전달하는 연결형.",
+            traits: [{ title: "연결형", desc: "사람들과 소통, 팀워크 즐김" }]
         },
-        "ISTJ": {
-            title: "논리주의자",
-            description: "실용적이고 사실에 기반한 논리주의자형은 신뢰할 수 있고 책임감이 강합니다. 전통과 질서를 중시하며, 체계적이고 꼼꼼한 방식으로 일을 처리합니다.",
-            traits: [
-                { title: "신뢰성", desc: "약속을 지키고 책임감 있게 행동" },
-                { title: "체계성", desc: "체계적이고 조직적인 접근" },
-                { title: "실용성", desc: "현실적이고 실용적인 해결책" },
-                { title: "인내심", desc: "꾸준하고 끈기 있는 노력" }
-            ]
+        "수박팡": {
+            title: "수박팡",
+            description: "시원하고 큰 매력, 다수와 즐겁게 소통하며 관계 형성을 좋아하는 연결형.",
+            traits: [{ title: "연결형", desc: "사람들과 소통, 팀워크 즐김" }]
         },
-        "ISFJ": {
-            title: "수호자",
-            description: "따뜻하고 헌신적인 수호자형은 다른 사람들을 돌보는 것을 중요하게 생각합니다. 책임감이 강하고 세심한 관찰력을 가지고 있어 주변 사람들의 필요를 잘 파악합니다.",
-            traits: [
-                { title: "헌신", desc: "다른 사람을 위한 헌신적 노력" },
-                { title: "책임감", desc: "맡은 일에 대한 강한 책임감" },
-                { title: "세심함", desc: "다른 사람의 필요를 세심하게 파악" },
-                { title: "안정성", desc: "안정적이고 신뢰할 수 있는 존재" }
-            ]
+        "파인팡": {
+            title: "파인팡",
+            description: "독창적이고 창의력 폭발, 도전을 즐기는 탐험형 연구자.",
+            traits: [{ title: "탐험형", desc: "창의적이고 도전 정신 강함" }]
         },
-        "ESTJ": {
-            title: "경영자",
-            description: "효율적이고 실용적인 경영자형은 질서와 전통을 중시합니다. 강한 리더십과 조직 능력을 가지고 있어 팀을 효과적으로 관리하고 목표를 달성하는 데 뛰어납니다.",
-            traits: [
-                { title: "리더십", desc: "강한 리더십과 조직 관리 능력" },
-                { title: "효율성", desc: "체계적이고 효율적인 업무 처리" },
-                { title: "책임감", desc: "맡은 일에 대한 강한 책임감" },
-                { title: "결단력", desc: "빠르고 확신에 찬 결정" }
-            ]
+        "키위킹": {
+            title: "키위킹",
+            description: "겉보기 평범하지만 속은 혁신적, 새로운 시도를 즐기는 탐험형.",
+            traits: [{ title: "탐험형", desc: "창의적이고 도전 정신 강함" }]
         },
-        "ESFJ": {
-            title: "집정관",
-            description: "따뜻하고 사교적인 집정관형은 다른 사람들을 돕고 조화를 이루는 것을 좋아합니다. 강한 책임감과 협력 정신을 가지고 있어 팀워크를 중시합니다.",
-            traits: [
-                { title: "사교성", desc: "사람들과의 관계를 중시" },
-                { title: "협력", desc: "팀워크와 협력을 중요하게 생각" },
-                { title: "책임감", desc: "다른 사람에 대한 강한 책임감" },
-                { title: "조화", desc: "갈등을 해결하고 조화를 추구" }
-            ]
+        "블루팡": {
+            title: "블루팡",
+            description: "작지만 강력한 아이디어, 창의적 감각이 뛰어난 탐험형.",
+            traits: [{ title: "탐험형", desc: "창의적이고 도전 정신 강함" }]
         },
-        "ISTP": {
-            title: "만능재주꾼",
-            description: "대담하고 실용적인 만능재주꾼형은 손으로 만지고 조작하는 것을 좋아합니다. 문제 해결에 뛰어난 능력을 가지고 있으며, 독립적이고 유연한 사고를 합니다.",
-            traits: [
-                { title: "실용성", desc: "현실적이고 실용적인 접근" },
-                { title: "독립성", desc: "자신만의 방식으로 문제 해결" },
-                { title: "유연성", desc: "변화하는 상황에 유연하게 대응" },
-                { title: "호기심", desc: "새로운 기술과 방법에 대한 관심" }
-            ]
+        "레모링": {
+            title: "레모링",
+            description: "톡 쏘는 도전 정신, 강렬하고 에너지 넘치는 탐험형 창업가.",
+            traits: [{ title: "탐험형", desc: "창의적이고 도전 정신 강함" }]
         },
-        "ISFP": {
-            title: "모험가",
-            description: "유연하고 매력적인 모험가형은 새로운 경험과 감각적 자극을 추구합니다. 예술적 감각이 뛰어나며, 자신만의 가치관에 따라 살아가는 것을 중요하게 생각합니다.",
-            traits: [
-                { title: "창의성", desc: "예술적이고 독창적인 감각" },
-                { title: "유연성", desc: "새로운 경험에 대한 개방성" },
-                { title: "진정성", desc: "자신만의 가치관에 따른 삶" },
-                { title: "감수성", desc: "세밀한 감각과 관찰력" }
-            ]
+        "포도군": {
+            title: "포도군",
+            description: "묵묵히 일하며 결과를 만들어내는 몰입형, 팀 속에서도 집중력 최고.",
+            traits: [{ title: "집중형", desc: "몰입과 집중, 실질적 성과 중심" }]
         },
-        "ESTP": {
-            title: "사업가",
-            description: "똑똑하고 에너지 넘치는 사업가형은 즉흥적이고 활동적인 삶을 즐깁니다. 현실적이고 실용적인 접근으로 문제를 해결하며, 사람들과의 상호작용을 좋아합니다.",
-            traits: [
-                { title: "활동성", desc: "에너지 넘치고 활동적인 성격" },
-                { title: "실용성", desc: "현실적이고 실용적인 문제 해결" },
-                { title: "사교성", desc: "사람들과의 상호작용을 즐김" },
-                { title: "유연성", desc: "변화하는 상황에 빠르게 적응" }
-            ]
+        "레드애플": {
+            title: "레드애플",
+            description: "체계적이고 효율적, 실용적이고 안정적인 집중형.",
+            traits: [{ title: "집중형", desc: "몰입과 집중, 실질적 성과 중심" }]
         },
-        "ESFP": {
-            title: "연예인",
-            description: "자유로운 영혼의 연예인형은 삶을 즐기고 사람들과 함께하는 시간을 소중히 여깁니다. 따뜻하고 친근한 성격으로 주변 사람들에게 긍정적인 에너지를 전달합니다.",
-            traits: [
-                { title: "사교성", desc: "사람들과의 관계를 중시" },
-                { title: "긍정성", desc: "밝고 긍정적인 에너지" },
-                { title: "자유로움", desc: "자유롭고 유연한 성격" },
-                { title: "즐거움", desc: "삶의 즐거움을 추구" }
-            ]
+        "단배링": {
+            title: "단배링",
+            description: "든든하고 묵묵히 지키는 안정적 집중형, 책임감 끝판왕.",
+            traits: [{ title: "집중형", desc: "몰입과 집중, 실질적 성과 중심" }]
         }
     };
 
     let currentQuestion = 0;
-    let answers = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    // 모든 캐릭터의 점수를 0으로 초기화
+    let answers = {
+        "감자군": 0, "바나니": 0, "애플링": 0, "배링": 0,
+        "파인팡": 0, "키위킹": 0, "블루팡": 0, "레모링": 0,
+        "딸기팡": 0, "체리링": 0, "망고몽": 0, "오렌지팟": 0, "수박팡": 0,
+        "포도군": 0, "레드애플": 0, "단배링": 0
+    };
     let selectedOption = null;
     let testStartTime;
+
+    // 캐릭터 유형 및 우선순위 정의 (동점 처리용)
+    const characterTypes = {
+        "안정형": ["감자군", "바나니", "애플링", "배링"],
+        "탐험형": ["파인팡", "키위킹", "블루팡", "레모링"],
+        "연결형": ["딸기팡", "체리링", "망고몽", "오렌지팟", "수박팡"],
+        "집중형": ["포도군", "레드애플", "단배링"]
+    };
+
+    const typePriority = ["탐험형", "연결형", "집중형", "안정형"]; // 우선순위: 탐험형 > 연결형 > 집중형 > 안정형
+
+    // 선택지 매핑 (질문 2의 C, D 선택지 수정 필요)
+    const optionToCharactersMap = {
+        // 챕터 2: 나의 일경험 유형 (직무유형 테스트)
+        "C2Q1A": ["감자군", "바나니", "애플링", "배링"], // 계획대로 꼼꼼하게
+        "C2Q1B": ["파인팡", "키위킹", "블루팡", "레모링"], // 새로운 방법을 시도
+        "C2Q1C": ["딸기팡", "체리링", "망고몽", "오렌지팟", "수박팡"], // 사람들과 협업하며 아이디어를 나누는 걸 선호한다,
+        "C2Q1D": ["포도군", "레드애플", "단배링"], // 혼자 집중해서 몰입하며 해결하는걸 선호한다.
+
+        "C2Q2A": ["감자군", "바나니", "애플링", "배링"], // 매뉴얼/정형화
+        "C2Q2B": ["파인팡", "키위킹", "블루팡", "레모링"], // 새로운 해결책
+        "C2Q2C": ["딸기팡", "체리링", "망고몽", "오렌지팟", "수박팡"], // 직장동료, 상사와 상의 후 결정한다.
+        "C2Q2D": ["포도군", "레드애플", "단배링"], // 먼저 시도 후 조정한다.
+
+        "C2Q3A": ["감자군", "바나니", "애플링", "배링"], // 계획하고 정리하는 역할
+        "C2Q3B": ["파인팡", "키위킹", "블루팡", "레모링"], // 새로운 아이디어를 제시하는 역할
+        "C2Q3C": ["딸기팡", "체리링", "망고몽", "오렌지팟", "수박팡"], // 커뮤니케이션 역할
+        "C2Q3D": ["포도군", "레드애플", "단배링"], // 모든 일 직접 수행! 부지런한 일개미 역할
+
+        "C2Q4A": ["감자군", "바나니", "애플링", "배링"], // 정해진 기준·성과 목표 달성 여부
+        "C2Q4B": ["파인팡", "키위킹", "블루팡", "레모링"], // 창의적 시도와 새로운 결과
+        "C2Q4C": ["딸기팡", "체리링", "망고몽", "오렌지팟", "수박팡"], // 팀과 함께 협력한 과정과 결과
+        "C2Q4D": ["포도군", "레드애플", "단배링"], // 혼자 성취한 실질적 결과
+
+        "C2Q5A": ["감자군", "바나니", "애플링", "배링"], // 안정성과 예측 가능성
+        "C2Q5B": ["파인팡", "키위킹", "블루팡", "레모링"], // 도전과 창의성
+        "C2Q5C": ["딸기팡", "체리링", "망고몽", "오렌지팟", "수박팡"], // 사람들과의 관계·협업
+        "C2Q5D": ["포도군", "레드애플", "단배링"]  // 개인 성취감·전문성
+    };
 
     // 데이터 저장 및 로드
     function getAnalyticsData() {
         return JSON.parse(localStorage.getItem('mbtiAnalytics')) || {
             totalTests: 0,
             uniqueUsers: [],
-            mbtiTypeCounts: {},
-            dimensionCounts: { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 },
+            mbtiTypeCounts: {
+                "감자군": 0, "바나니": 0, "애플링": 0, "배링": 0,
+                "파인팡": 0, "키위킹": 0, "블루팡": 0, "레모링": 0,
+                "딸기팡": 0, "체리링": 0, "망고몽": 0, "오렌지팟": 0, "수박팡": 0,
+                "포도군": 0, "레드애플": 0, "단배링": 0
+            },
+            dimensionCounts: {
+                "안정형": 0, "탐험형": 0, "연결형": 0, "집중형": 0
+            },
             completionTimes: []
         };
     }
@@ -726,7 +696,13 @@
         document.getElementById('startPage').style.display = 'none';
         document.getElementById('testPage').style.display = 'block';
         currentQuestion = 0;
-        answers = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        // 모든 캐릭터의 점수를 0으로 초기화
+        answers = {
+            "감자군": 0, "바나니": 0, "애플링": 0, "배링": 0,
+            "파인팡": 0, "키위킹": 0, "블루팡": 0, "레모링": 0,
+            "딸기팡": 0, "체리링": 0, "망고몽": 0, "오렌지팟": 0, "수박팡": 0,
+            "포도군": 0, "레드애플": 0, "단배링": 0
+        };
         selectedOption = null;
         testStartTime = new Date(); // 테스트 시작 시간 기록
         showQuestion();
@@ -766,9 +742,15 @@
         if (selectedOption === null) return;
         
         const question = questions[currentQuestion];
-        const selectedAnswer = question.options[selectedOption];
-        answers[selectedAnswer.type]++;
-        
+        const selectedAnswerType = question.options[selectedOption].type;
+
+        // 캐릭터 점수 증가
+        if (optionToCharactersMap[selectedAnswerType]) {
+            optionToCharactersMap[selectedAnswerType].forEach(character => {
+                answers[character]++;
+            });
+        }
+
         currentQuestion++;
         
         if (currentQuestion < questions.length) {
@@ -778,20 +760,41 @@
             const completionTime = (testEndTime - testStartTime) / 1000 / 60; // 분 단위
 
             // 결과 계산 후 분석 데이터 업데이트
-            const mbtiType = calculateMbtiType();
-            updateAnalyticsData(mbtiType, completionTime);
-            showResult(mbtiType);
+            const resultCharacter = calculateResultCharacter();
+            updateAnalyticsData(resultCharacter, completionTime);
+            showResult(resultCharacter);
         }
     }
 
-    function calculateMbtiType() {
-        return (answers.E > answers.I ? 'E' : 'I') +
-               (answers.S > answers.N ? 'S' : 'N') +
-               (answers.T > answers.F ? 'T' : 'F') +
-               (answers.J > answers.P ? 'J' : 'P');
+    function calculateResultCharacter() {
+        let maxScore = -1;
+        let resultCharacters = [];
+
+        // 가장 높은 점수를 가진 캐릭터 찾기
+        for (const character in answers) {
+            if (answers[character] > maxScore) {
+                maxScore = answers[character];
+                resultCharacters = [character];
+            } else if (answers[character] === maxScore) {
+                resultCharacters.push(character);
+            }
+        }
+
+        // 동점 처리
+        if (resultCharacters.length > 1) {
+            for (const priorityType of typePriority) {
+                const charactersInPriorityType = characterTypes[priorityType];
+                for (const char of resultCharacters) {
+                    if (charactersInPriorityType.includes(char)) {
+                        return char; // 가장 높은 우선순위의 캐릭터 반환
+                    }
+                }
+            }
+        }
+        return resultCharacters[0]; // 단일 캐릭터 또는 우선순위가 없는 경우 첫 번째 캐릭터 반환
     }
 
-    function updateAnalyticsData(mbtiType, completionTime) {
+    function updateAnalyticsData(resultCharacter, completionTime) {
         let analyticsData = getAnalyticsData();
         analyticsData.totalTests++;
         
@@ -801,24 +804,28 @@
             analyticsData.uniqueUsers.push(navigator.userAgent);
         }
 
-        analyticsData.mbtiTypeCounts[mbtiType] = (analyticsData.mbtiTypeCounts[mbtiType] || 0) + 1;
+        // 캐릭터별 카운트 업데이트
+        analyticsData.mbtiTypeCounts[resultCharacter] = (analyticsData.mbtiTypeCounts[resultCharacter] || 0) + 1;
         
-        // 4차원별 분포 업데이트
-        for (const typeChar in answers) {
-            analyticsData.dimensionCounts[typeChar] += answers[typeChar];
+        // 4차원별 분포 (새로운 유형으로 변경) 업데이트
+        for (const typeKey in characterTypes) {
+            if (characterTypes[typeKey].includes(resultCharacter)) {
+                analyticsData.dimensionCounts[typeKey]++;
+                break;
+            }
         }
 
         analyticsData.completionTimes.push(completionTime);
         saveAnalyticsData(analyticsData);
     }
 
-    function showResult(mbtiType) {
-        const result = mbtiResults[mbtiType];
+    function showResult(resultCharacter) {
+        const result = mbtiResults[resultCharacter];
         
         document.getElementById('testPage').style.display = 'none';
         document.getElementById('resultPage').style.display = 'block';
         
-        document.getElementById('resultType').textContent = mbtiType;
+        document.getElementById('resultType').textContent = resultCharacter;
         document.getElementById('resultTitle').textContent = result.title;
         document.getElementById('resultDescription').textContent = result.description;
         
@@ -838,7 +845,13 @@
 
     function restartTest() {
         currentQuestion = 0;
-        answers = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        // 모든 캐릭터의 점수를 0으로 초기화
+        answers = {
+            "감자군": 0, "바나니": 0, "애플링": 0, "배링": 0,
+            "파인팡": 0, "키위킹": 0, "블루팡": 0, "레모링": 0,
+            "딸기팡": 0, "체리링": 0, "망고몽": 0, "오렌지팟": 0, "수박팡": 0,
+            "포도군": 0, "레드애플": 0, "단배링": 0
+        };
         selectedOption = null;
         
         document.getElementById('resultPage').style.display = 'none';
@@ -870,6 +883,10 @@
             if (analyticsData.mbtiTypeCounts[type] > maxCount) {
                 maxCount = analyticsData.mbtiTypeCounts[type];
                 mostFrequentType = type;
+            } else if (analyticsData.mbtiTypeCounts[type] === maxCount && maxCount > 0) {
+                // 동점 처리 (우선순위는 여기서 직접 처리하지 않고, calculateResultCharacter에서 결정된 결과를 사용)
+                // 여기서는 단순히 가장 많은 유형을 표시
+                // 여러 개가 동점일 경우, 첫 번째로 발견된 유형을 표시
             }
         }
         document.getElementById('mostFrequentType').textContent = mostFrequentType;
@@ -879,9 +896,9 @@
         const avgCompletionTime = analyticsData.completionTimes.length > 0 ? (totalCompletionTime / analyticsData.completionTimes.length).toFixed(2) : 0;
         document.getElementById('avgCompletionTime').textContent = avgCompletionTime;
 
-        // MBTI 유형별 분포 차트
-        const mbtiTypeLabels = Object.keys(analyticsData.mbtiTypeCounts).sort();
-        const mbtiTypeData = mbtiTypeLabels.map(label => analyticsData.mbtiTypeCounts[label] || 0);
+        // 캐릭터별 분포 차트
+        const characterLabels = Object.keys(analyticsData.mbtiTypeCounts).sort();
+        const characterData = characterLabels.map(label => analyticsData.mbtiTypeCounts[label] || 0);
 
         if (mbtiTypeChartInstance) {
             mbtiTypeChartInstance.destroy();
@@ -889,10 +906,10 @@
         mbtiTypeChartInstance = new Chart(document.getElementById('mbtiTypeChart').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: mbtiTypeLabels,
+                labels: characterLabels,
                 datasets: [{
-                    label: '유형별 테스트 수',
-                    data: mbtiTypeData,
+                    label: '캐릭터별 테스트 수',
+                    data: characterData,
                     backgroundColor: 'rgba(74, 144, 226, 0.6)',
                     borderColor: 'rgba(74, 144, 226, 1)',
                     borderWidth: 1
@@ -907,12 +924,18 @@
                             precision: 0
                         }
                     }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '캐릭터별 분포'
+                    }
                 }
             }
         });
 
-        // 4차원별 분포 차트
-        const dimensionLabels = ['E', 'I', 'S', 'N', 'T', 'F', 'J', 'P'];
+        // 4차원별 분포 차트 (새로운 유형으로 변경)
+        const dimensionLabels = ["안정형", "탐험형", "연결형", "집중형"];
         const dimensionData = dimensionLabels.map(label => analyticsData.dimensionCounts[label] || 0);
 
         if (dimensionChartInstance) {
@@ -923,19 +946,19 @@
             data: {
                 labels: dimensionLabels,
                 datasets: [{
-                    label: '4차원별 선택 수',
+                    label: '유형별 테스트 수',
                     data: dimensionData,
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', // E, I
-                        'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)', // S, N
-                        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)', // T, F
-                        'rgba(199, 199, 199, 0.6)', 'rgba(83, 102, 255, 0.6)'  // J, P
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)'
                     ],
                     borderColor: [
-                        'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
-                        'rgba(199, 199, 199, 1)', 'rgba(83, 102, 255, 1)'
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -948,6 +971,12 @@
                         ticks: {
                             precision: 0
                         }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '4가지 유형별 분포'
                     }
                 }
             }
